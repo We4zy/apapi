@@ -120,5 +120,21 @@ namespace AccountPayableAPI.Controllers
 
             return retData;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sortColumns"></param>
+        /// <param name="sortFilters"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public AP_Measure_Final[] GetAPMeasureData(string[] sortColumns, string[] sortFilters)
+        {
+            AccountsPayableDataContext db = new AccountsPayableDataContext();
+
+
+
+            return null;
+        }
     }
 }
