@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="Sandbox" Class="AccountsPayableDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="WebSettings" ConnectionString="Data Source=cosdwsql;Initial Catalog=Sandbox;Integrated Security=True" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="SandboxConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="FMS.APMeasures" Member="APMeasures">
+    <Type Name="APMeasure">
+      <Column Name="RowId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="user_code" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="vendor_number" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="indxctrl" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="[AP Document]" Member="AP_Document" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="[AP Ref Document]" Member="AP_Ref_Document" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="[Invoice Date]" Member="Invoice_Date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="[Date Received]" Member="Date_Received" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="[Enter Date]" Member="Enter_Date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="[Check Date]" Member="Check_Date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="[Invoice to Received days]" Member="Invoice_to_Received_days" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Received to Check days]" Member="Received_to_Check_days" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Invoice to Check days]" Member="Invoice_to_Check_days" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[Pmt Data]" Member="Pmt_Data" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
+      <Column Name="check_no" Type="System.String" DbType="VarChar(15)" CanBeNull="true" />
+      <Column Name="pmt_name" Type="System.String" DbType="VarChar(30)" CanBeNull="true" />
+      <Column Name="desc_30" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Comment" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="amount" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="[GL Acct]" Member="GL_Acct" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="[GL Dept]" Member="GL_Dept" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="[Ledger/Batch]" Member="Ledger_Batch" Type="System.String" DbType="VarChar(30)" CanBeNull="true" />
+      <Column Name="Requestor" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="[Last Access]" Member="Last_Access" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="[Last Login]" Member="Last_Login" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="FMS.Contracts" Member="Contracts">
+    <Type Name="Contract">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="[Doc Date]" Member="Doc_Date" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="[Clerk Number]" Member="Clerk_Number" Type="System.String" DbType="Char(20)" CanBeNull="true" />
+      <Column Name="Dept" Type="System.String" DbType="Char(50)" CanBeNull="true" />
+      <Column Name="[Sub-Doc]" Member="Sub_Doc" Type="System.String" DbType="Char(50)" CanBeNull="true" />
+      <Column Name="Vendor" Type="System.String" DbType="Char(60)" CanBeNull="true" />
+      <Column Name="[Desc]" Member="Desc" Type="System.String" DbType="VarChar(8000)" CanBeNull="true" />
+      <Column Name="Effective" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="Expires" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="Expense" Type="System.Decimal" DbType="Decimal(20,2) NOT NULL" CanBeNull="false" />
+      <Column Name="Revenue" Type="System.Decimal" DbType="Decimal(20,2) NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="FMS.depts_and_divisions" Member="depts_and_divisions">
+    <Type Name="depts_and_division">
+      <Column Name="dept_text" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="dept_num" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="division" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="dept_name" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="FMS.Expenditures" Member="Expenditures">
+    <Type Name="Expenditure">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Department" Type="System.String" DbType="VarChar(64)" CanBeNull="true" />
+      <Column Name="Service" Type="System.String" DbType="VarChar(64)" CanBeNull="true" />
+      <Column Name="Fund_Group" Type="System.String" DbType="VarChar(64)" CanBeNull="true" />
+      <Column Name="Category" Type="System.String" DbType="VarChar(64)" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="VarChar(64)" CanBeNull="true" />
+      <Column Name="Year" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Vendor" Type="System.String" DbType="VarChar(64)" CanBeNull="true" />
+      <Column Name="Check_ACH_Number" Type="System.String" DbType="VarChar(64)" CanBeNull="true" />
+      <Column Name="Check_Date" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="Check_Amount" Type="System.Decimal" DbType="Decimal(15,2)" CanBeNull="true" />
+      <Column Name="Invoice_Number" Type="System.String" DbType="VarChar(64)" CanBeNull="true" />
+      <Column Name="Invoice_Date" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="Invoice_Amount" Type="System.Decimal" DbType="Decimal(15,2)" CanBeNull="true" />
+      <Column Name="Check_Distribution" Type="System.Decimal" DbType="Decimal(15,2)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="FMS.AP_Measure_Final" Member="AP_Measure_Finals">
+    <Type Name="AP_Measure_Final">
+      <Column Name="RowId" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="IndxCtrl" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="AP_document" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="vendor_number" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
+      <Column Name="invoice_date" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
+      <Column Name="received_date" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
+      <Column Name="entered_date" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
+      <Column Name="check_date" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
+      <Column Name="check_month" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="invoice_to_received" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="received_to_check" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="total_days" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="payment_name" Type="System.String" DbType="VarChar(30)" CanBeNull="true" />
+      <Column Name="total_amount" Type="System.Decimal" DbType="Decimal(38,2)" CanBeNull="true" />
+      <Column Name="GL_dept" Type="System.String" DbType="VarChar(4)" CanBeNull="true" />
+      <Column Name="requestor" Type="System.String" DbType="VarChar(24)" CanBeNull="true" />
+      <Column Name="last_access" Type="System.String" DbType="VarChar(24)" CanBeNull="true" />
+      <Column Name="department" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="division" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="total_days_group" Type="System.String" DbType="VarChar(17) NOT NULL" CanBeNull="false" />
+      <Column Name="exclude_filter" Type="System.String" DbType="VarChar(11)" CanBeNull="true" />
+    </Type>
+  </Table>
+</Database>
