@@ -1,4 +1,9 @@
-﻿<div class="jumbotron">
+﻿@{ 
+    Layout = "../Shared/_layout.cshtml";
+}
+
+
+<div class="jumbotron">
     <h1>FMS Accounts API</h1>
     <p class="lead">FMS AP/AR Web API.  Accounts data access WebAPI</p>
     <p><a href="/Help" class="btn btn-primary btn-lg">WebAPI Dictionary &raquo;</a></p>
@@ -21,4 +26,81 @@
         <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
         <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301872">Learn more &raquo;</a></p>
     </div>*@
+
+    <table id="dataGrid"></table>
+    <div id="WaterListPager"></div>
 </div>
+
+
+<script type="text/javascript">
+
+    $(function () {
+
+        var response;
+        var request = [
+            {
+                ObjectOperator: 'and',
+                SortColumn: 'vendor_number',
+                CompareOperator: '=',
+                SortValue: '005071'
+            }
+            ,
+            {
+                ObjectOperator: 'or',
+                SortColumn: 'invoice_date',
+                CompareOperator: '>',
+                SortValue: '2017-03-31'
+            }
+        ];   
+
+        $.ajax({
+            url: '/api/accounts/GetAPMeasureData',
+            type: 'POST',
+            data: JSON.stringify(request),
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                response = data;
+
+                alert(JSON.stringify(response));
+            },
+            error: function (xhr, errorThrown) {
+                alert("AJAX Error : " + errorThrown);
+            }
+        });
+    });
+
+    //    $("#dataGrid").jqGrid({
+    //        //url: "http://localhost:36453/api/UtilitiesAPI/GetWaterOutages",
+    //        datatype: "local",
+    //        data: response,
+    //        //mtype: "GET",
+    //        jsonReader: {
+    //            //total: "Total",
+    //            //records: "TotalRecords",
+    //            //root: "Rows",
+    //            cell: ""
+    //            //repeatitems: false
+    //        },
+    //        colNames: ['RowId', 'IndxCtrl'],
+    //        colModel: [
+    //            { name: 'RowId', index: 'RowId', width: 120, sorttype: "int", searchoptions: { sopt: ['cn', 'eq', 'bw'] } },
+    //            { name: 'IndxCtrl', index: 'IndxCtrl', width: 140, sorttype: "int", searchoptions: { sopt: ['cn', 'eq', 'bw'] } },
+    //        ],
+    //        search: true,
+    //        rowNum: 50,
+    //        rowList: [5, 10, 20, 50],
+    //        pager: '#WaterListPager',
+    //        height: 'auto',
+    //        width: 'auto',
+    //        hidegrid: true,
+    //        loadonce: true,
+    //        viewrecords: true,
+    //        sortname: 'LastNonZeroDate',
+    //        sortorder: "desc",
+    //        caption: "Test Dynamic API Method",
+    //    });    
+    //});
+
+
+</script>

@@ -7,6 +7,8 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Reflection;
 using AccountPayableAPI.Models;
+using LinqKit;
+using Newtonsoft;
 
 namespace AccountPayableAPI.Controllers
 {
@@ -15,7 +17,8 @@ namespace AccountPayableAPI.Controllers
         /// <summary>
         /// Simple HTTPGet.  Going to just use the string params in query string for quick implementation.  An Enum would be better
         /// for the sortColumn and sortField, but this is a simple access method for UI dev.  Once all the chart, controls, etc are defined on the UI 
-        /// layer, then more specific JSON returns will be formatted and returned
+        /// layer, then more specific JSON returns will be formatted and returned.  I figured out after this method how to use the reflection within the
+        /// LINQ predicate statements with a .Compile() when we actually execute the statement, so the switch...case on the field name is now un-needed
         /// </summary>
         /// <param name="sortColumn"></param>
         /// <param name="sortFilter"></param>
@@ -30,11 +33,11 @@ namespace AccountPayableAPI.Controllers
             PropertyInfo prop = null; AP_Measure_Final[] retData = null;
             AP_Measure_Final instance = new AP_Measure_Final();
 
-            //running through the public properties on the .dbml type so that we can match property name ToLower() for safety
+            //running through the public properties on the .dbml type so that we can match property name ToLower() for safety         
             foreach (PropertyInfo propInfo in instance.GetType().GetProperties())
                 if (propInfo.Name.ToLower() == sortColumn.ToLower()) { prop = propInfo; break; }
 
-            var predicate = PredicateBuilder.True<AP_Measure_Final>();
+            var predicate = PredicateBuilder.New<AP_Measure_Final>(true);//.True<AP_Measure_Final>();
 
             if (prop != null)
             {
@@ -114,7 +117,7 @@ namespace AccountPayableAPI.Controllers
                         break;
                 }
             }
-            if (predicate.CanReduce) predicate = (Expression<Func<AP_Measure_Final, bool>>)predicate.Reduce();
+            //if (predicate.CanReduce) predicate = (Expression<Func<AP_Measure_Final, bool>>)predicate.Reduce();
 
             retData = db.AP_Measure_Finals.Where(predicate).ToArray();
 
@@ -122,19 +125,104 @@ namespace AccountPayableAPI.Controllers
         }
 
         /// <summary>
-        /// 
+        ///  We could easily make the return a T[] so that this methdo will also dynamically work with any table/view within the given DBML
         /// </summary>
         /// <param name="sortColumns"></param>
         /// <param name="sortFilters"></param>
         /// <returns></returns>
-        [HttpGet]
-        public AP_Measure_Final[] GetAPMeasureData(string[] sortColumns, string[] sortFilters)
+        [HttpPost]
+        public AP_Measure_Final[] GetAPMeasureData([FromBody]SearchCriteria[] sortInfo)
         {
+            if (sortInfo == null) return null;
+
             AccountsPayableDataContext db = new AccountsPayableDataContext();
+            AP_Measure_Final[] retData = null;
+            AP_Measure_Final instance = new AP_Measure_Final();
+            PropertyInfo prop = null;
 
+            ExpressionStarter<AP_Measure_Final> predicate = PredicateBuilder.New<AP_Measure_Final>(true);
+            foreach (SearchCriteria sort in sortInfo)
+            {
+                //Retrieve the PropertyIfo object from the .dbml generated class matching on the incoming SortColumn Name to be safe
+                // prop = instance.GetType().GetProperty(sort.SortColumn, BindingFlags.IgnoreCase | BindingFlags.DeclaredOnly );
+                foreach (PropertyInfo propInfo in instance.GetType().GetProperties())
+                    if (propInfo.Name.ToLower() == sort.SortColumn.ToLower()) { prop = propInfo; break; }
 
+                //make sure the sent in SortColumn is actually a property on the .dbml generated object file for the given table/view
+                if (prop != null)
+                {
+                    //the predicate statement which will be appended to main predicate statement as an AND or OR SQL block
+                    Expression<Func<AP_Measure_Final, bool>> innerPredicate = null;
 
-            return null;
+                    switch (sort.CompareOperator.ToLower())
+                    {
+                        case "=":
+                            innerPredicate = ap => ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString().Equals(sort.SortValue.ToString());
+                            break;
+                        case "like":
+                            innerPredicate = ap => ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString().Contains(sort.SortValue.ToString());
+                            break;
+                        case "startswith":
+                            innerPredicate = ap => ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString().StartsWith(sort.SortValue.ToString());
+                            break;
+                        case "contains":
+                            innerPredicate = ap => ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString().Contains(sort.SortValue.ToString());
+                            break;
+                        case ">":
+                            switch (Type.GetTypeCode(prop.PropertyType))
+                            {
+                                case TypeCode.DateTime:
+                                    innerPredicate = ap => DateTime.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) > DateTime.Parse(sort.SortValue.ToLower());
+                                    break;
+                                case TypeCode.Int32:
+                                    innerPredicate = ap => Int32.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) > Int32.Parse(sort.SortValue.ToLower());
+                                    break;
+                                case TypeCode.Int64:
+                                    innerPredicate = ap => Int64.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) > Int64.Parse(sort.SortValue.ToLower());
+                                    break;
+                                case TypeCode.Decimal:
+                                    innerPredicate = ap => decimal.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) > decimal.Parse(sort.SortValue.ToLower());
+                                    break;
+                                case TypeCode.Double:
+                                    innerPredicate = ap => double.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) > double.Parse(sort.SortValue.ToLower());
+                                    break;
+                                case TypeCode.Byte:
+                                    innerPredicate = ap => byte.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) > byte.Parse(sort.SortValue.ToLower());
+                                    break;
+                            }
+                            break;
+                        case "<":
+                            switch (Type.GetTypeCode(prop.PropertyType))
+                            {
+                                case TypeCode.DateTime:
+                                    innerPredicate = ap => DateTime.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) < DateTime.Parse(sort.SortValue.ToLower());
+                                    break;
+                                case TypeCode.Int32:
+                                    innerPredicate = ap => Int32.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) < Int32.Parse(sort.SortValue.ToLower());
+                                    break;
+                                case TypeCode.Int64:
+                                    innerPredicate = ap => Int64.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) < Int64.Parse(sort.SortValue.ToLower());
+                                    break;
+                                case TypeCode.Decimal:
+                                    innerPredicate = ap => decimal.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) < decimal.Parse(sort.SortValue.ToLower());
+                                    break;
+                                case TypeCode.Double:
+                                    innerPredicate = ap => double.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) < double.Parse(sort.SortValue.ToLower());
+                                    break;
+                                case TypeCode.Byte:
+                                    innerPredicate = ap => byte.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) < byte.Parse(sort.SortValue.ToLower());
+                                    break;
+                            }
+                            break;
+                    }
+
+                    if (sort.ObjectOperator.ToLower().Equals("and") && innerPredicate != null) predicate = predicate.And(innerPredicate);
+                    else if (sort.ObjectOperator.ToLower().Equals("or") && innerPredicate != null) predicate = predicate.Or(innerPredicate);
+                }
+            }
+
+            retData = db.AP_Measure_Finals.Where(predicate.Compile()).ToArray();
+            return retData;
         }
     }
 }
