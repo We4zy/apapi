@@ -14,7 +14,7 @@ namespace AccountPayableAPI.Models
     /// or DBML property type.  That rule is broken so often that it's safer to explicitly state the compare data type.
     /// </summary>
     /// <typeparam name="TDbType"></typeparam>
-    public class DynamicQuery<TDbType>
+    public sealed class DynamicQuery<TDbType>
     {
         private TDbType localType;
 
