@@ -126,6 +126,7 @@ namespace AccountPayableAPI.Controllers
 
         /// <summary>
         ///  We could easily make the return a T[] so that this methdo will also dynamically work with any table/view within the given DBML
+        ///  I plan to upgrade this methdo to utilize generics so that it can work with any table or any EF tpye or DBML type
         /// </summary>
         /// <param name="sortColumns"></param>
         /// <param name="sortFilters"></param>
@@ -138,91 +139,285 @@ namespace AccountPayableAPI.Controllers
             AccountsPayableDataContext db = new AccountsPayableDataContext();
             AP_Measure_Final[] retData = null;
             AP_Measure_Final instance = new AP_Measure_Final();
-            PropertyInfo prop = null;
+            PropertyInfo newProp = null; IQueryable<AP_Measure_Final> query = db.AP_Measure_Finals;
 
-            ExpressionStarter<AP_Measure_Final> predicate = PredicateBuilder.New<AP_Measure_Final>(true);
+            ExpressionStarter<AP_Measure_Final> andPredicate = PredicateBuilder.New<AP_Measure_Final>(true); bool orPass = false;
+            ExpressionStarter<AP_Measure_Final> orPredicate = PredicateBuilder.New<AP_Measure_Final>(false); 
             foreach (SearchCriteria sort in sortInfo)
             {
                 //Retrieve the PropertyIfo object from the .dbml generated class matching on the incoming SortColumn Name to be safe
                 // prop = instance.GetType().GetProperty(sort.SortColumn, BindingFlags.IgnoreCase | BindingFlags.DeclaredOnly );
                 foreach (PropertyInfo propInfo in instance.GetType().GetProperties())
-                    if (propInfo.Name.ToLower() == sort.SortColumn.ToLower()) { prop = propInfo; break; }
+                    if (propInfo.Name.ToLower() == sort.SortColumn.ToLower()) { newProp = propInfo; break; }
 
                 //make sure the sent in SortColumn is actually a property on the .dbml generated object file for the given table/view
-                if (prop != null)
+                if (newProp != null)
                 {
                     //the predicate statement which will be appended to main predicate statement as an AND or OR SQL block
-                    Expression<Func<AP_Measure_Final, bool>> innerPredicate = null;
+                    Expression<Func<AP_Measure_Final, bool>> expression = null;
+
+                    var prop = newProp;
 
                     switch (sort.CompareOperator.ToLower())
                     {
+                        case "in":
+                            expression = ap => sort.SortValue.ToString().Contains(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString());
+                            break;
                         case "=":
-                            innerPredicate = ap => ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString().Equals(sort.SortValue.ToString());
+                            expression = ap => ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString() == (sort.SortValue.ToString());
                             break;
                         case "like":
-                            innerPredicate = ap => ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString().Contains(sort.SortValue.ToString());
-                            break;
-                        case "startswith":
-                            innerPredicate = ap => ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString().StartsWith(sort.SortValue.ToString());
-                            break;
+                        case "startswith": 
                         case "contains":
-                            innerPredicate = ap => ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString().Contains(sort.SortValue.ToString());
+                            expression = ap => ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString().Contains(sort.SortValue.ToString());
                             break;
                         case ">":
-                            switch (Type.GetTypeCode(prop.PropertyType))
+                            switch (sort.CompareDataType.ToLower())
                             {
-                                case TypeCode.DateTime:
-                                    innerPredicate = ap => DateTime.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) > DateTime.Parse(sort.SortValue.ToLower());
+                                case "datetime":
+                                    expression = ap => DateTime.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) > DateTime.Parse(sort.SortValue.ToLower());
                                     break;
-                                case TypeCode.Int32:
-                                    innerPredicate = ap => Int32.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) > Int32.Parse(sort.SortValue.ToLower());
+                                case "int":
+                                    expression = ap => Int32.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) > Int32.Parse(sort.SortValue.ToLower());
                                     break;
-                                case TypeCode.Int64:
-                                    innerPredicate = ap => Int64.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) > Int64.Parse(sort.SortValue.ToLower());
+                                case "int64":
+                                    expression = ap => Int64.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) > Int64.Parse(sort.SortValue.ToLower());
                                     break;
-                                case TypeCode.Decimal:
-                                    innerPredicate = ap => decimal.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) > decimal.Parse(sort.SortValue.ToLower());
+                                case "decimal":
+                                    expression = ap => decimal.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) > decimal.Parse(sort.SortValue.ToLower());
                                     break;
-                                case TypeCode.Double:
-                                    innerPredicate = ap => double.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) > double.Parse(sort.SortValue.ToLower());
-                                    break;
-                                case TypeCode.Byte:
-                                    innerPredicate = ap => byte.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) > byte.Parse(sort.SortValue.ToLower());
+                                case "double":
+                                    expression = ap => double.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) > double.Parse(sort.SortValue.ToLower());
                                     break;
                             }
                             break;
                         case "<":
-                            switch (Type.GetTypeCode(prop.PropertyType))
+                            switch (sort.CompareDataType.ToLower())
                             {
-                                case TypeCode.DateTime:
-                                    innerPredicate = ap => DateTime.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) < DateTime.Parse(sort.SortValue.ToLower());
+                                case "datetime":
+                                    expression = ap => DateTime.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) < DateTime.Parse(sort.SortValue.ToLower());
                                     break;
-                                case TypeCode.Int32:
-                                    innerPredicate = ap => Int32.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) < Int32.Parse(sort.SortValue.ToLower());
+                                case "int":
+                                    expression = ap => Int32.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) < Int32.Parse(sort.SortValue.ToLower());
                                     break;
-                                case TypeCode.Int64:
-                                    innerPredicate = ap => Int64.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) < Int64.Parse(sort.SortValue.ToLower());
+                                case "int64":
+                                    expression = ap => Int64.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) < Int64.Parse(sort.SortValue.ToLower());
                                     break;
-                                case TypeCode.Decimal:
-                                    innerPredicate = ap => decimal.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) < decimal.Parse(sort.SortValue.ToLower());
+                                case "decimal":
+                                    expression = ap => decimal.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) < decimal.Parse(sort.SortValue.ToLower());
                                     break;
-                                case TypeCode.Double:
-                                    innerPredicate = ap => double.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) < double.Parse(sort.SortValue.ToLower());
-                                    break;
-                                case TypeCode.Byte:
-                                    innerPredicate = ap => byte.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) < byte.Parse(sort.SortValue.ToLower());
+                                case "double":
+                                    expression = ap => double.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) < double.Parse(sort.SortValue.ToLower());
                                     break;
                             }
                             break;
                     }
 
-                    if (sort.ObjectOperator.ToLower().Equals("and") && innerPredicate != null) predicate = predicate.And(innerPredicate);
-                    else if (sort.ObjectOperator.ToLower().Equals("or") && innerPredicate != null) predicate = predicate.Or(innerPredicate);
+                    if (sort.ObjectOperator.ToLower().Equals("and") && expression != null)
+                        andPredicate = andPredicate.And(expression);
+                    else if (sort.ObjectOperator.ToLower().Equals("or") && expression != null)
+                    {
+                        orPredicate = orPredicate.Or(expression);
+                        orPass = true;
+                    }
+                }
+            }
+            //Depending upon how inner or statements can be formatted, we may need to determine if this should be an and or an Or.  Ir it's just a single Or clause then OR, if it's appending a few OR clauses then
+            // this might need to be constructed as an AND
+            if (orPass) andPredicate = andPredicate.Or(orPredicate);
+
+            retData = db.AP_Measure_Finals.AsExpandable().Where(andPredicate.Compile()).ToArray();
+            return retData;
+        }
+
+
+       
+
+        //public PagedViewModel<T> Filter<TValue>(Expression<Func<T, TValue>> predicate, FilterType filterType = FilterType.Equals)
+        //{
+        //    var name = (predicate.Body as MemberExpression ?? ((UnaryExpression)predicate.Body).Operand as MemberExpression).Member.Name;
+        //    var value = Expression.Constant(ParamsData[name].To<TValue>(), typeof(T).GetProperty(name).PropertyType);
+
+        //    // If nothing has been set for filter, skip and don't filter data.
+        //    ViewData[name] = m_QueryInternal.Distinct(predicate.Compile()).ToSelectList(name, name, ParamsData[name]);
+        //    if (string.IsNullOrWhiteSpace(ParamsData[name]))
+        //        return this;
+
+        //    var nameExpression = Expression.Parameter(typeof(T), name);
+        //    var propertyExpression = Expression.Property(nameExpression, typeof(T).GetProperty(name));
+
+        //    // Create expression body based on type of filter
+        //    Expression expression;
+        //    MethodInfo method;
+        //    switch (filterType)
+        //    {
+        //        case FilterType.Like:
+        //            method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
+        //            expression = Expression.Call(propertyExpression, method, value);
+        //            break;
+        //        case FilterType.EndsWith:
+        //        case FilterType.StartsWith:
+        //            method = typeof(string).GetMethod(filterType.ToString(), new[] { typeof(string) });
+        //            expression = Expression.Call(propertyExpression, method, value);
+        //            break;
+        //        case FilterType.GreaterThan:
+        //            expression = Expression.GreaterThan(propertyExpression, value);
+        //            break;
+        //        case FilterType.Equals:
+        //            expression = Expression.Equal(propertyExpression, value);
+        //            break;
+        //        default:
+        //            throw new ArgumentException("Filter Type could not be determined");
+        //    }
+
+        //    // Execute the expression against Query.
+        //    var methodCallExpression = Expression.Call(
+        //        typeof(Queryable),
+        //        "Where",
+        //        new[] { Query.ElementType },
+        //        Query.Expression,
+        //        Expression.Lambda<Func<T, bool>>(expression, new[] { nameExpression }));
+
+        //    // Filter the current Query data.
+        //    Query = Query.Provider.CreateQuery<T>(methodCallExpression);
+
+        //    return this;
+        //}
+
+
+
+
+
+        //var paramsData = new NameValueCollection { { "CreatedOn", DateTime.Today.ToString() } };
+        //var model = m_data.ToPagedList(new ViewDataDictionary(), paramsData, 1, 10, null, x => x.LastName)
+        //                  .Filters(Criteria<TrainerProfile>.New(x => x.CreatedOn, FilterType.GreaterThan))
+        //                  .Setup();  
+
+
+    }
+
+
+    /// <summary>
+    /// So many times Database developers break the rules and hold int values in varchar[], or DateTime in varchar[].  If DB designers actually used the correct data types
+    /// then we would not need the CompareDataType property within our SearchCriteria object.  we could just GetType() of the target property or field and then do the
+    /// specified compare operator with that given type.  But if one needs to do a ">" greaterThan on 2 DateTime values, but in the Database they are stored in an NVarChar[] field, then
+    /// that blows that out of the water.  that's why to be safe I added the CompareDataType so that we cold specidy the compare type that we really want, not just rely upon the Entity Framework object
+    /// or DBML property type.  That rule is broken so often that it's safer to explicitly state the compare data type.
+    /// </summary>
+    /// <typeparam name="TDbType"></typeparam>
+    public class DynamicQuery<TDbType>
+    {
+        private TDbType localType;
+
+        public DynamicQuery(TDbType type) { localType = type; }
+
+        /// <summary>
+        //// For all CompareOperators other than "<" and ">", use "string"
+        /// </summary>
+        ////<param name="searchCriteria">
+        /// SearchCriteria Params and Descriptions
+        ///         ObjectOperator          =   A basic operator for constructing the underlying TSQL statement (or Linq statment)  can be "and" or "or"
+        ///         SortColumn              =   The field or column name in the Database or Entity Framework object property or DBML property that you want to search or sort on 
+        ////        CompareOperator         =   The standard compare operator to use.  Values can be:  "=", "in", "like", "StartWith", "Contains", ">", "<" 
+        ///         SortValue               =   The actualy value that you want to compare the Database column against.  Can be any valid value that could be use in a TSQL statement
+        ///         CompareDataType:        =   Because Database designers ALWAYS break the rules and hold improper datatypes in incorrect coumn datatypes.  IE.  Like storing a DateTime in an NVarChar(12)
+        ///                                     Since those rules are alwaysw broken, we need to explicitly state what type of comparison data type we want to use.  Can be: "int", "int64", "decimal", "DateTime", "double"
+        ////                                    These different values are really only needed for ">" and "<" then comparisons so that the correct comparison will be calculated.  All the other CompareOperators just use type "string"
+        /// </param>
+        /// <returns> Whichever EntityFramework or DBML type you are querying against </returns>
+        public TDbType[] Query(SearchCriteria[] searchCriteria)
+        {
+            if (searchCriteria == null) return null;
+
+            AccountsPayableDataContext db = new AccountsPayableDataContext();
+            TDbType[] retData = null; TDbType instance = localType; PropertyInfo newProp = null;
+            IQueryable<TDbType> query = (IQueryable<TDbType>)db.GetType().GetProperty(instance.GetType().Name).GetValue(db, null);
+            ExpressionStarter<TDbType> andPredicate = PredicateBuilder.New<TDbType>(true); bool orPass = false;
+            ExpressionStarter<TDbType> orPredicate = PredicateBuilder.New<TDbType>(false);
+
+            foreach (SearchCriteria sort in searchCriteria)
+            {
+                //Retrieve the PropertyIfo object from the .dbml generated class matching on the incoming SortColumn Name to be safe
+                foreach (PropertyInfo propInfo in instance.GetType().GetProperties())
+                    if (propInfo.Name.ToLower() == sort.SortColumn.ToLower()) { newProp = propInfo; break; }
+
+                //make sure the sent in SortColumn is actually a property on the .dbml generated object file for the given table/view
+                if (newProp != null)
+                {
+                    //the predicate statement which will be appended to main predicate statement as an AND or OR SQL block
+                    Expression<Func<TDbType, bool>> expression = null;
+                    var prop = newProp;
+
+                    switch (sort.CompareOperator.ToLower())
+                    {
+                        case "in":
+                            expression = ap => sort.SortValue.ToString().Contains(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString());
+                            break;
+                        case "=":
+                            expression = ap => ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString() == (sort.SortValue.ToString());
+                            break;
+                        case "like":
+                        case "startswith":
+                        case "contains":
+                            expression = ap => ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString().Contains(sort.SortValue.ToString());
+                            break;
+                        case ">":
+                            switch (sort.CompareDataType.ToLower())
+                            {
+                                case "datetime":
+                                    expression = ap => DateTime.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) > DateTime.Parse(sort.SortValue.ToLower());
+                                    break;
+                                case "int":
+                                    expression = ap => Int32.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) > Int32.Parse(sort.SortValue.ToLower());
+                                    break;
+                                case "int64":
+                                    expression = ap => Int64.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) > Int64.Parse(sort.SortValue.ToLower());
+                                    break;
+                                case "decimal":
+                                    expression = ap => decimal.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) > decimal.Parse(sort.SortValue.ToLower());
+                                    break;
+                                case "double":
+                                    expression = ap => double.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) > double.Parse(sort.SortValue.ToLower());
+                                    break;
+                            }
+                            break;
+                        case "<":
+                            switch (sort.CompareDataType.ToLower())
+                            {
+                                case "datetime":
+                                    expression = ap => DateTime.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) < DateTime.Parse(sort.SortValue.ToLower());
+                                    break;
+                                case "int":
+                                    expression = ap => Int32.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) < Int32.Parse(sort.SortValue.ToLower());
+                                    break;
+                                case "int64":
+                                    expression = ap => Int64.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) < Int64.Parse(sort.SortValue.ToLower());
+                                    break;
+                                case "decimal":
+                                    expression = ap => decimal.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) < decimal.Parse(sort.SortValue.ToLower());
+                                    break;
+                                case "double":
+                                    expression = ap => double.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) < double.Parse(sort.SortValue.ToLower());
+                                    break;
+                            }
+                            break;
+                    }
+
+                    if (sort.ObjectOperator.ToLower().Equals("and") && expression != null)
+                        andPredicate = andPredicate.And(expression);
+                    else if (sort.ObjectOperator.ToLower().Equals("or") && expression != null)
+                    {
+                        orPredicate = orPredicate.Or(expression);
+                        orPass = true;
+                    }
                 }
             }
 
-            retData = db.AP_Measure_Finals.Where(predicate.Compile()).ToArray();
+            if (orPass) andPredicate = andPredicate.Or(orPredicate);
+
+            retData = query.AsExpandable().Where(andPredicate.Compile()).ToArray();
             return retData;
         }
+
     }
 }

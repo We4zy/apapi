@@ -11,7 +11,7 @@ namespace AccountPayableAPI.Models
         public string SortColumn { get; set; }
         public string SortValue { get; set; }
         public string CompareOperator { get; set; }
-        //public string SortDirection { get; set; }
+        public string CompareDataType { get; set; }
     }
 
     public class ComparerOperators

@@ -40,16 +40,18 @@
         var request = [
             {
                 ObjectOperator: 'and',
-                SortColumn: 'vendor_number',
-                CompareOperator: '=',
-                SortValue: '005071'
+                SortColumn: 'invoice_date',
+                CompareOperator: '>',
+                SortValue: '2016-12-30',
+                CompareDataType: 'DateTime'
             }
             ,
             {
-                ObjectOperator: 'or',
+                ObjectOperator: 'and',
                 SortColumn: 'invoice_date',
-                CompareOperator: '>',
-                SortValue: '2017-03-31'
+                CompareOperator: '<',
+                SortValue: '2017-07-19',
+                CompareDataType: 'DateTime'
             }
         ];   
 
