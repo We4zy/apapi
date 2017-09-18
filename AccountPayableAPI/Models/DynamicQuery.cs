@@ -10,7 +10,7 @@ namespace AccountPayableAPI.Models
     /// So many times Database developers break the rules and hold int values in varchar[], or DateTime in varchar[].  If DB designers actually used the correct data types
     /// then we would not need the CompareDataType property within our SearchCriteria object.  we could just GetType() of the target property or field and then do the
     /// specified compare operator with that given type.  But if one needs to do a ">" greaterThan on 2 DateTime values, but in the Database they are stored in an NVarChar[] field, then
-    /// that blows that out of the water.  that's why to be safe I added the CompareDataType so that we cold specidy the compare type that we really want, not just rely upon the Entity Framework object
+    /// that blows that out of the water.  that's why to be safe I added the CompareDataType so that we could specify the compare type that we really want, not just rely upon the Entity Framework object
     /// or DBML property type.  That rule is broken so often that it's safer to explicitly state the compare data type.
     /// </summary>
     /// <typeparam name="TDbType"></typeparam>
@@ -30,11 +30,11 @@ namespace AccountPayableAPI.Models
         ///         SortColumn              =   The field or column name in the Database or Entity Framework object property or DBML property that you want to search or sort on 
         ////        CompareOperator         =   The standard compare operator to use.  Values can be:  "=", "in", "like", "StartWith", "Contains", ">", "<" 
         ///         SortValue               =   The actualy value that you want to compare the Database column against.  Can be any valid value that could be use in a TSQL statement
-        ///         CompareDataType:        =   Because Database designers ALWAYS break the rules and hold improper datatypes in incorrect coumn datatypes.  IE.  Like storing a DateTime in an NVarChar(12)
-        ///                                     Since those rules are alwaysw broken, we need to explicitly state what type of comparison data type we want to use.  Can be: "int", "int64", "decimal", "DateTime", "double", "long"
-        ////                                    These different values are really only needed for ">" and "<" then comparisons so that the correct comparison will be calculated.  All the other CompareOperators need not specify CompareDataType"
+        ///         CompareDataType:        =   Because Database designers ALWAYS break the rules and hold improper datatypes in incorrect column datatypes.  IE.  Like storing a DateTime in an NVarChar(12)
+        ///                                     Since those rules are always broken, we need to explicitly state what type of comparison data type we want to use.  Can be: "int", "int64", "decimal", "DateTime", "double", "long"
+        ////                                    These different values are really only needed for ">" and "<" then comparisons so that the correct comparison will be utilized.  All the other CompareOperators need not specify CompareDataType"
         /// </param>
-        /// <returns> Whichever EntityFramework or DBML type you are querying against </returns>
+        /// <returns> Whichever EntityFramework or DBML (LinQ-to-SQL) type you are querying against </returns>
         public TDbType[] Query(SearchCriteria[] searchCriteria)
         {
             if (searchCriteria == null) return null;

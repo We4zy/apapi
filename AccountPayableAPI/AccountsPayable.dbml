@@ -96,4 +96,21 @@
       <Column Name="exclude_filter" Type="System.String" DbType="VarChar(11)" CanBeNull="true" />
     </Type>
   </Table>
+  <Table Name="dbo.Abandoned_Property_Combined_Source" Member="Abandoned_Property_Combined_Sources">
+    <Type Name="Abandoned_Property_Combined_Source">
+      <Column Name="Parcel" Type="System.String" DbType="NVarChar(15)" CanBeNull="true" />
+      <Column Name="delFrom" Type="System.String" DbType="VarChar(4)" CanBeNull="true" />
+      <Column Name="delTo" Type="System.String" DbType="VarChar(4)" CanBeNull="true" />
+      <Column Name="totalAmt" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="COS_lienAmt" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="waterShutoffDate" Type="System.DateTime" DbType="DateTime2" CanBeNull="true" />
+      <Column Name="Class" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="DaysREO" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="AvistaShutoff" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="prop_type" Type="System.String" DbType="VarChar(1)" CanBeNull="true" />
+      <Column Name="site_address" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="owner_name" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
+      <Column Name="prop_use_desc" Type="System.String" DbType="VarChar(40)" CanBeNull="true" />
+    </Type>
+  </Table>
 </Database>

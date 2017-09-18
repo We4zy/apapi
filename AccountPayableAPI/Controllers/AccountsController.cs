@@ -125,10 +125,9 @@ namespace AccountPayableAPI.Controllers
         }
 
         [HttpPost]
-        public object[] GetAPMeasureData(SearchCriteria[] sortCriteria)
+        public AP_Measure_Final[] GetAPMeasureData([FromBody] SearchCriteria[] sortCriteria)
         {
-            var ret = new DynamicQuery<AP_Measure_Final>(new AP_Measure_Final()).Query(sortCriteria);
-
+            var ret =  new DynamicQuery<AP_Measure_Final>(new AP_Measure_Final()).Query(sortCriteria);
             return ret;
         }
 
@@ -267,7 +266,7 @@ namespace AccountPayableAPI.Controllers
                             switch (sort.CompareDataType.ToLower())
                             {
                                 case "datetime":
-                                    expression = ap => DateTime.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) < DateTime.Parse(sort.SortValue.ToLower());
+                                    expression = ap => DateTime.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) < DateTime.Parse(sort.SortValue.ToLower());   
                                     break;
                                 case "int":
                                     expression = ap => Int32.Parse(ap.GetType().GetProperty(prop.Name).GetValue(ap).ToString()) < Int32.Parse(sort.SortValue.ToLower());

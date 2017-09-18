@@ -104,6 +104,14 @@ namespace AccountPayableAPI
 				return this.GetTable<AP_Measure_Final>();
 			}
 		}
+		
+		public System.Data.Linq.Table<Abandoned_Property_Combined_Source> Abandoned_Property_Combined_Sources
+		{
+			get
+			{
+				return this.GetTable<Abandoned_Property_Combined_Source>();
+			}
+		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="FMS.APMeasures")]
@@ -1693,6 +1701,249 @@ namespace AccountPayableAPI
 				if ((this._exclude_filter != value))
 				{
 					this._exclude_filter = value;
+				}
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Abandoned_Property_Combined_Source")]
+	public partial class Abandoned_Property_Combined_Source
+	{
+		
+		private string _Parcel;
+		
+		private string _delFrom;
+		
+		private string _delTo;
+		
+		private System.Nullable<decimal> _totalAmt;
+		
+		private System.Nullable<decimal> _COS_lienAmt;
+		
+		private System.Nullable<System.DateTime> _waterShutoffDate;
+		
+		private string _Class;
+		
+		private System.Nullable<int> _DaysREO;
+		
+		private System.Nullable<System.DateTime> _AvistaShutoff;
+		
+		private string _prop_type;
+		
+		private string _site_address;
+		
+		private string _owner_name;
+		
+		private string _prop_use_desc;
+		
+		public Abandoned_Property_Combined_Source()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Parcel", DbType="NVarChar(15)")]
+		public string Parcel
+		{
+			get
+			{
+				return this._Parcel;
+			}
+			set
+			{
+				if ((this._Parcel != value))
+				{
+					this._Parcel = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_delFrom", DbType="VarChar(4)")]
+		public string delFrom
+		{
+			get
+			{
+				return this._delFrom;
+			}
+			set
+			{
+				if ((this._delFrom != value))
+				{
+					this._delFrom = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_delTo", DbType="VarChar(4)")]
+		public string delTo
+		{
+			get
+			{
+				return this._delTo;
+			}
+			set
+			{
+				if ((this._delTo != value))
+				{
+					this._delTo = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_totalAmt", DbType="Money")]
+		public System.Nullable<decimal> totalAmt
+		{
+			get
+			{
+				return this._totalAmt;
+			}
+			set
+			{
+				if ((this._totalAmt != value))
+				{
+					this._totalAmt = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_COS_lienAmt", DbType="Money")]
+		public System.Nullable<decimal> COS_lienAmt
+		{
+			get
+			{
+				return this._COS_lienAmt;
+			}
+			set
+			{
+				if ((this._COS_lienAmt != value))
+				{
+					this._COS_lienAmt = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_waterShutoffDate", DbType="DateTime2")]
+		public System.Nullable<System.DateTime> waterShutoffDate
+		{
+			get
+			{
+				return this._waterShutoffDate;
+			}
+			set
+			{
+				if ((this._waterShutoffDate != value))
+				{
+					this._waterShutoffDate = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Class", DbType="NVarChar(255)")]
+		public string Class
+		{
+			get
+			{
+				return this._Class;
+			}
+			set
+			{
+				if ((this._Class != value))
+				{
+					this._Class = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DaysREO", DbType="Int")]
+		public System.Nullable<int> DaysREO
+		{
+			get
+			{
+				return this._DaysREO;
+			}
+			set
+			{
+				if ((this._DaysREO != value))
+				{
+					this._DaysREO = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AvistaShutoff", DbType="DateTime")]
+		public System.Nullable<System.DateTime> AvistaShutoff
+		{
+			get
+			{
+				return this._AvistaShutoff;
+			}
+			set
+			{
+				if ((this._AvistaShutoff != value))
+				{
+					this._AvistaShutoff = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_prop_type", DbType="VarChar(1)")]
+		public string prop_type
+		{
+			get
+			{
+				return this._prop_type;
+			}
+			set
+			{
+				if ((this._prop_type != value))
+				{
+					this._prop_type = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_site_address", DbType="VarChar(50)")]
+		public string site_address
+		{
+			get
+			{
+				return this._site_address;
+			}
+			set
+			{
+				if ((this._site_address != value))
+				{
+					this._site_address = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_owner_name", DbType="VarChar(40)")]
+		public string owner_name
+		{
+			get
+			{
+				return this._owner_name;
+			}
+			set
+			{
+				if ((this._owner_name != value))
+				{
+					this._owner_name = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_prop_use_desc", DbType="VarChar(40)")]
+		public string prop_use_desc
+		{
+			get
+			{
+				return this._prop_use_desc;
+			}
+			set
+			{
+				if ((this._prop_use_desc != value))
+				{
+					this._prop_use_desc = value;
 				}
 			}
 		}

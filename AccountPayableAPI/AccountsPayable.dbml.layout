@@ -1,35 +1,41 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 12.875, 8.5" name="AccountsPayable">
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 14.25, 8.5" name="AccountsPayable">
   <DataContextMoniker Name="/AccountsPayableDataContext" />
   <nestedChildShapes>
-    <classShape Id="419ddc7a-8aa4-4204-bbf5-4683766c3854" absoluteBounds="4.125, 0.875, 2, 5.6169254557291657">
+    <classShape Id="419ddc7a-8aa4-4204-bbf5-4683766c3854" absoluteBounds="4.125, 0.5, 2, 5.6169254557291657">
       <DataClassMoniker Name="/AccountsPayableDataContext/APMeasure" />
       <nestedChildShapes>
-        <elementListCompartment Id="704d7378-585a-4f86-a2d3-06fe4d333e72" absoluteBounds="4.14, 1.335, 1.9700000000000002, 5.0569254557291661" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="704d7378-585a-4f86-a2d3-06fe4d333e72" absoluteBounds="4.14, 0.96, 1.9700000000000002, 5.0569254557291661" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="bb31d724-1422-4fb0-895b-a84b38263fac" absoluteBounds="6.625, 1, 2, 2.9247054036458331">
+    <classShape Id="bb31d724-1422-4fb0-895b-a84b38263fac" absoluteBounds="6.625, 0.5, 2, 2.9247054036458331">
       <DataClassMoniker Name="/AccountsPayableDataContext/Contract" />
       <nestedChildShapes>
-        <elementListCompartment Id="4996b823-b095-499b-b940-e8eacda9465c" absoluteBounds="6.64, 1.46, 1.9700000000000002, 2.364705403645833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="4996b823-b095-499b-b940-e8eacda9465c" absoluteBounds="6.64, 0.96, 1.9700000000000002, 2.364705403645833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="0b68fb16-d551-4b9b-a83e-62d770643e52" absoluteBounds="6.75, 4.5, 2, 1.5785953776041666">
+    <classShape Id="0b68fb16-d551-4b9b-a83e-62d770643e52" absoluteBounds="6.625, 4, 2, 1.5785953776041666">
       <DataClassMoniker Name="/AccountsPayableDataContext/depts_and_division" />
       <nestedChildShapes>
-        <elementListCompartment Id="4a43f59c-6af3-4734-a169-d0f5857b9c6f" absoluteBounds="6.7650000000000006, 4.96, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="4a43f59c-6af3-4734-a169-d0f5857b9c6f" absoluteBounds="6.6400000000000006, 4.46, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="d47887d9-8a40-4f32-9989-6c4b7f08c955" absoluteBounds="1.625, 0.875, 2, 3.6939111328124996">
+    <classShape Id="d47887d9-8a40-4f32-9989-6c4b7f08c955" absoluteBounds="1.625, 0.5, 2, 3.6939111328124996">
       <DataClassMoniker Name="/AccountsPayableDataContext/Expenditure" />
       <nestedChildShapes>
-        <elementListCompartment Id="5e5db8ec-0fef-41c9-af06-833af1f07493" absoluteBounds="1.6400000000000001, 1.335, 1.9700000000000002, 3.1339111328125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="5e5db8ec-0fef-41c9-af06-833af1f07493" absoluteBounds="1.6400000000000001, 0.96, 1.9700000000000002, 3.1339111328125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="d48b6bb6-4589-4eaf-91bd-29646a59f94d" absoluteBounds="10.625, 0.875, 2, 4.8477197265625">
+    <classShape Id="d48b6bb6-4589-4eaf-91bd-29646a59f94d" absoluteBounds="12, 0.5, 2, 4.8477197265625">
       <DataClassMoniker Name="/AccountsPayableDataContext/AP_Measure_Final" />
       <nestedChildShapes>
-        <elementListCompartment Id="a7e5bb78-25ed-4ee8-b740-a3e397370eeb" absoluteBounds="10.64, 1.335, 1.9700000000000002, 4.2877197265625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="a7e5bb78-25ed-4ee8-b740-a3e397370eeb" absoluteBounds="12.015, 0.96, 1.9700000000000002, 4.2877197265625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="e7dcc124-049d-47a0-9458-83a7ebc4d6c0" absoluteBounds="9.25, 0.625, 2, 3.3093082682291666">
+      <DataClassMoniker Name="/AccountsPayableDataContext/Abandoned_Property_Combined_Source" />
+      <nestedChildShapes>
+        <elementListCompartment Id="410ed685-7a2d-4e97-9286-68093f3e93fa" absoluteBounds="9.265, 1.085, 1.9700000000000002, 2.7493082682291665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
   </nestedChildShapes>
