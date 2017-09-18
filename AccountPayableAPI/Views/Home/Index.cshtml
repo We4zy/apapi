@@ -40,23 +40,23 @@
         var request = [
             {
                 ObjectOperator: 'and',
-                SortColumn: 'vendor_number',
+                SortColumn: 'site_address',
                 CompareOperator: '=',
-                SortValue: '005071',
+                SortValue: '0  VACANT LAND',
                 CompareDataType: ''
             }
             ,
             {  
                 ObjectOperator: 'and',
-                SortColumn: 'invoice_date',
-                CompareOperator: '>',
-                SortValue: '2017-03-02',
+                SortColumn: 'delTo',
+                CompareOperator: '=',
+                SortValue: '2016',
                 CompareDataType: 'DateTime'
             }
         ];   
 
         $.ajax({
-            url: '/api/accounts/GetAPMeasureData',
+            url: '/api/properties/GetAbandonedProperties',
             type: 'POST',
             data: JSON.stringify(request),
             dataType: 'json',
